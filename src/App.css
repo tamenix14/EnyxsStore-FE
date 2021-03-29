@@ -116,8 +116,8 @@ nav {
 /* Footer */
 footer {
   clear: both;
-  position: absolute;
-  bottom:0;
+  position: relative;
+  margin-top: 200px;
   color: grey;
   bottom: 0;
   width: 100%;
@@ -189,7 +189,7 @@ footer {
 }
 
 #product_image {
-  margin-top: 9rem;
+  margin-top: 4.5rem;
 }
 
 /* Loader */
