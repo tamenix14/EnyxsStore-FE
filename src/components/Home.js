@@ -1,21 +1,24 @@
 import React, { Fragment, useState, useEffect } from "react";
-import MetaData from "./layout/MetaData";
 import Pagination from "react-js-pagination";
-import { useDispatch, useSelector } from "react-redux";
-import { getProducts } from "../actions/productAction";
-import Product from "../components/product/Product";
-import Loader from "./layout/Loader";
-import { useAlert } from "react-alert";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
+
+import MetaData from "./layout/MetaData";
+import Product from "./product/Product";
+import Loader from "./layout/Loader";
+
+import { useDispatch, useSelector } from "react-redux";
+import { useAlert } from "react-alert";
+import { getProducts } from "../actions/productAction";
 
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 
 const Home = ({ match }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [price, setPrice] = useState([1, 3000]);
+  const [price, setPrice] = useState([1, 1000]);
   const [category, setCategory] = useState("");
+  const [rating, setRating] = useState(0);
 
   const categories = [
     "Cleats",
@@ -28,7 +31,6 @@ const Home = ({ match }) => {
   ];
 
   const alert = useAlert();
-
   const dispatch = useDispatch();
 
   const {
@@ -47,8 +49,8 @@ const Home = ({ match }) => {
       return alert.error(error);
     }
 
-    dispatch(getProducts(keyword, currentPage, price, category));
-  }, [dispatch, alert, error, keyword, currentPage, price, category]);
+    dispatch(getProducts(keyword, currentPage, price, category, rating));
+  }, [dispatch, alert, error, keyword, currentPage, price, category, rating]);
 
   function setCurrentPageNo(pageNumber) {
     setCurrentPage(pageNumber);
@@ -108,6 +110,34 @@ const Home = ({ match }) => {
                               onClick={() => setCategory(category)}
                             >
                               {category}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <hr className="my-3" />
+
+                      <div className="mt-5">
+                        <h4 className="mb-3">Ratings</h4>
+
+                        <ul className="pl-0">
+                          {[5, 4, 3, 2, 1].map((star) => (
+                            <li
+                              style={{
+                                cursor: "pointer",
+                                listStyleType: "none",
+                              }}
+                              key={star}
+                              onClick={() => setRating(star)}
+                            >
+                              <div className="rating-outer">
+                                <div
+                                  className="rating-inner"
+                                  style={{
+                                    width: `${star * 20}%`,
+                                  }}
+                                ></div>
+                              </div>
                             </li>
                           ))}
                         </ul>
