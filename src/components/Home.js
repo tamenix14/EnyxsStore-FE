@@ -9,7 +9,7 @@ import Loader from "./layout/Loader";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "react-alert";
-import { getProducts } from "../actions/productAction";
+import { getProducts } from "../actions/productActions";
 
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
@@ -19,6 +19,7 @@ const Home = ({ match }) => {
   const [price, setPrice] = useState([1, 1000]);
   const [category, setCategory] = useState("");
   const [rating, setRating] = useState(0);
+  const [color, setColor] = useState("");
 
   const categories = [
     "Cleats",
@@ -29,6 +30,8 @@ const Home = ({ match }) => {
     "Bags & Luggage",
     "Electronics",
   ];
+
+  const colors = ["Black", "Brown", "Silver", "White", "Blue", "Ocean"];
 
   const alert = useAlert();
   const dispatch = useDispatch();
@@ -49,8 +52,18 @@ const Home = ({ match }) => {
       return alert.error(error);
     }
 
-    dispatch(getProducts(keyword, currentPage, price, category, rating));
-  }, [dispatch, alert, error, keyword, currentPage, price, category, rating]);
+    dispatch(getProducts(keyword, currentPage, price, category, color, rating));
+  }, [
+    dispatch,
+    alert,
+    error,
+    keyword,
+    currentPage,
+    price,
+    category,
+    color,
+    rating,
+  ]);
 
   function setCurrentPageNo(pageNumber) {
     setCurrentPage(pageNumber);
@@ -70,12 +83,11 @@ const Home = ({ match }) => {
           <MetaData title={"Buy Best Products Online"} />
 
           <h1 id="products_heading">Latest Products</h1>
-
           <section id="products" className="container mt-5">
             <div className="row">
               {keyword ? (
                 <Fragment>
-                  <div className="col-6 col-md-3 mt-5 mb-5">
+                  <div className="col-6 col-md-4 mt-5 mb-5">
                     <div className="px-5">
                       <Range
                         marks={{
@@ -100,19 +112,50 @@ const Home = ({ match }) => {
                         <h4 className="mb-3">Categories</h4>
 
                         <ul className="pl-0">
-                          {categories.map((category) => (
-                            <li
-                              style={{
-                                cursor: "pointer",
-                                listStyleType: "none",
-                              }}
-                              key={category}
-                              onClick={() => setCategory(category)}
-                            >
-                              {category}
-                            </li>
+                          {categories.map((cate) => (
+                            <div>
+                              <input
+                                type="radio"
+                                style={{
+                                  cursor: "pointer",
+                                  listStyleType: "none",
+                                }}
+                                name="category"
+                                value={cate}
+                                key={cate}
+                                onChange={() => setCategory(cate)}
+                                checked={cate === category}
+                              />
+                              <label className="ml-2">{cate}</label>
+                            </div>
                           ))}
                         </ul>
+                      </div>
+
+                      <hr className="my-3" />
+
+                      <div className="mt-5">
+                        <h4 className="mb-3">Colors</h4>
+
+                        <div className="pl-0">
+                          {colors.map((c) => (
+                            <div>
+                              <input
+                                type="radio"
+                                style={{
+                                  cursor: "pointer",
+                                  listStyleType: "none",
+                                }}
+                                name="color"
+                                value={c}
+                                key={c}
+                                onChange={() => setColor(c)}
+                                checked={c === color}
+                              />
+                              <label className="ml-1">{c}</label>
+                            </div>
+                          ))}
+                        </div>
                       </div>
 
                       <hr className="my-3" />
@@ -145,11 +188,19 @@ const Home = ({ match }) => {
                     </div>
                   </div>
 
-                  <div className="col-6 col-md-9">
+                  <div className="col-6 col-md-8">
                     <div className="row">
-                      {products.map((product) => (
-                        <Product key={product._id} product={product} col={4} />
-                      ))}
+                      {products.length ? (
+                        products.map((product) => (
+                          <Product
+                            key={product._id}
+                            product={product}
+                            col={4}
+                          />
+                        ))
+                      ) : (
+                        <h1>No products found</h1>
+                      )}
                     </div>
                   </div>
                 </Fragment>

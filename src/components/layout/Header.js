@@ -3,8 +3,21 @@ import { Route } from "react-router-dom";
 import "../../App.css";
 import Search from "./Search";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useAlert } from "react-alert";
+import { logout } from "../../actions/userActions";
 
 const Header = () => {
+  const alert = useAlert();
+  const dispatch = useDispatch();
+
+  const { user, loading } = useSelector((state) => state.auth);
+
+  const logoutHandler = () => {
+    dispatch(logout());
+    alert.success("Logged out successfully");
+  };
+
   return (
     <Fragment>
       <nav className="navbar row">
@@ -22,15 +35,70 @@ const Header = () => {
         </div>
 
         <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
-          <button className="btn" id="login_btn">
-            Login
-          </button>
-          <span id="cart" className="ml-3">
-            Cart
-          </span>
-          <span className="ml-1" id="cart_count">
-            2
-          </span>
+          <Link to="/cart" style={{ textDecoration: "none" }}>
+            <span id="cart" className="mr-2">
+              Cart
+            </span>
+            <span className="mr-5 " id="cart_count">
+              2
+            </span>
+          </Link>
+
+          {user ? (
+            <div className="ml-4 dropdown d-inline">
+              <Link
+                to="#!"
+                className="btn dropdown-toggle text-white"
+                type="button"
+                id="dropDownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <figure className="avatar avatar-nav">
+                  <img
+                    className="rounded-circle"
+                    src={user.avatar && user.avatar.url}
+                    alt={user && user.name}
+                  />
+                </figure>
+                <span>{user && user.name}</span>
+              </Link>
+              <div
+                style={{ top: "unset" }}
+                className="dropdown-menu"
+                aria-labelledby="dropDownMenuButton"
+              >
+                {user && user.role !== "admin" ? (
+                  <Link className="dropdown-item" to="/orders/me">
+                    Orders
+                  </Link>
+                ) : (
+                  <Link className="dropdown-item" to="/dashboard">
+                    Dashboard
+                  </Link>
+                )}
+                <Link className="dropdown-item" to="/me">
+                  Profile
+                </Link>
+                <Link
+                  onClick={logoutHandler}
+                  className="dropdown-item text-danger"
+                  to="/"
+                >
+                  Logout
+                </Link>
+              </div>
+            </div>
+          ) : (
+            !loading && (
+              <Link to="/login">
+                <button className="btn" id="login_btn">
+                  Login
+                </button>
+              </Link>
+            )
+          )}
         </div>
       </nav>
     </Fragment>
