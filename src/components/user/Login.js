@@ -1,12 +1,14 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { useAlert } from "react-alert";
-import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
 import Loader from "../layout/Loader";
 import MetaData from "../layout/MetaData";
-import { Link } from "react-router-dom";
+
+import { useAlert } from "react-alert";
+import { useDispatch, useSelector } from "react-redux";
 import { login, clearErrors } from "../../actions/userActions";
 
-const Login = ({ history }) => {
+const Login = ({ history, location }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,9 +19,11 @@ const Login = ({ history }) => {
     (state) => state.auth
   );
 
+  const redirect = location.search ? location.search.split("=")[1] : "/";
+
   useEffect(() => {
     if (isAuthenticated) {
-      history.push("/");
+      history.push(redirect);
     }
 
     if (error) {
@@ -39,7 +43,7 @@ const Login = ({ history }) => {
         <Loader />
       ) : (
         <Fragment>
-          <MetaData title={"login"} />
+          <MetaData title={"Login"} />
 
           <div className="row wrapper">
             <div className="col-10 col-lg-5">

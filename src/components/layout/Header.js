@@ -12,6 +12,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const { user, loading } = useSelector((state) => state.auth);
+  const {cartItems} = useSelector(state => state.cart)
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -40,7 +41,7 @@ const Header = () => {
               Cart
             </span>
             <span className="mr-5 " id="cart_count">
-              2
+              {cartItems.length}
             </span>
           </Link>
 
@@ -48,7 +49,7 @@ const Header = () => {
             <div className="ml-4 dropdown d-inline">
               <Link
                 to="#!"
-                className="btn dropdown-toggle text-white"
+                className="btn dropdown-toggle text-white mr-4"
                 type="button"
                 id="dropDownMenuButton"
                 data-toggle="dropdown"
