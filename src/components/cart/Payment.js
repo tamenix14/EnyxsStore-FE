@@ -1,9 +1,12 @@
 import React, { Fragment, useEffect } from "react";
+
 import MetaData from "../layout/MetaData";
-import { useDispatch, useSelector } from "react-redux";
-import { saveShippingInfo } from "../../actions/cartActions";
 import CheckoutSteps from "./CheckoutSteps";
+
 import { useAlert } from "react-alert";
+import { useDispatch, useSelector } from "react-redux";
+import { createOrder, clearErrors } from "../../actions/orderActions";
+
 import {
   useStripe,
   useElements,
@@ -11,6 +14,7 @@ import {
   CardExpiryElement,
   CardCvcElement,
 } from "@stripe/react-stripe-js";
+
 import axios from "axios";
 
 const options = {
@@ -32,10 +36,27 @@ const Payment = ({ history }) => {
 
   const { user } = useSelector((state) => state.auth);
   const { cartItems, shippingInfo } = useSelector((state) => state.cart);
+  const { error } = useSelector((state) => state.newOrder);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
+    }
+  }, [dispatch, alert, error]);
+
+  const order = {
+    orderItems: cartItems,
+    shippingInfo,
+  };
 
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
+  if (orderInfo) {
+    order.itemsPrice = orderInfo.itemsPrice;
+    order.shippingPrice = orderInfo.shippingPrice;
+    order.taxPrice = orderInfo.taxPrice;
+    order.totalPrice = orderInfo.totalPrice;
+  }
 
   const paymentData = {
     amount: Math.round(orderInfo.totalPrice * 100),
@@ -44,10 +65,9 @@ const Payment = ({ history }) => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    document.querySelector("#pay_btn").disable = true;
+    document.querySelector("#pay_btn").disabled = true;
 
     let res;
-
     try {
       const config = {
         headers: {
@@ -58,6 +78,8 @@ const Payment = ({ history }) => {
       res = await axios.post("/api/payment/process", paymentData, config);
 
       const clientSecret = res.data.client_secret;
+
+      console.log(clientSecret);
 
       if (!stripe || !elements) {
         return;
@@ -75,11 +97,16 @@ const Payment = ({ history }) => {
 
       if (result.error) {
         alert.error(result.error.message);
-        document.querySelector("#pay_btn").disable = false;
+        document.querySelector("#pay_btn").disabled = false;
       } else {
         // The payment is processed or not
         if (result.paymentIntent.status === "succeeded") {
-          // TODO : New Order
+          order.paymentInfo = {
+            id: result.paymentIntent.id,
+            status: result.paymentIntent.status,
+          };
+
+          dispatch(createOrder(order));
 
           history.push("/success");
         } else {
@@ -87,10 +114,8 @@ const Payment = ({ history }) => {
         }
       }
     } catch (error) {
-      document.querySelector("#pay_btn").disable = false;
+      document.querySelector("#pay_btn").disabled = false;
       alert.error(error.response.data.message);
-
-      console.log(error.response.data)
     }
   };
 

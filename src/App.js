@@ -15,11 +15,14 @@ import Cart from "./components/cart/Cart";
 import Shipping from "./components/cart/Shipping";
 import ConfirmOrder from "./components/cart/ConfirmOrder";
 import Payment from "./components/cart/Payment";
+import OrderSuccess from "./components/cart/OrderSuccess";
+import ListOrders from "./components/order/ListOrders";
+import OrderDetails from "./components/order/OrderDetails";
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import { loadUser } from "./actions/userActions";
 import store from "./store";
-
+import { useSelector } from 'react-redux'
 import ProductDetails from "./components/product/ProductDetails";
 
 // Payment
@@ -33,13 +36,15 @@ const App = () => {
     store.dispatch(loadUser());
 
     async function getStripApiKey() {
-      const { data } = await axios.get('/api/stripeapi');
+      const { data } = await axios.get("/api/stripeapi");
 
-      setStripeApiKey(data.stripeApiKey)
+      setStripeApiKey(data.stripeApiKey);
     }
 
     getStripApiKey();
   }, []);
+
+  const { user, isAuthenticated, loading } = useSelector(state => state.auth)
 
   return (
     <Router>
@@ -64,14 +69,17 @@ const App = () => {
           <ProtectedRoute exact path="/shipping" component={Shipping} />
           <ProtectedRoute
             exact
-            path="/order/confirm"
+            path="/confirm"
             component={ConfirmOrder}
           />
-          {stripeApiKey &&
+          {stripeApiKey && (
             <Elements stripe={loadStripe(stripeApiKey)}>
               <ProtectedRoute path="/payment" component={Payment} />
             </Elements>
-          }
+          )}
+          <ProtectedRoute exact path="/success" component={OrderSuccess} />
+          <ProtectedRoute exact path="/orders/me" component={ListOrders} />
+          <ProtectedRoute exact path="/order/:id" component={OrderDetails} />
         </div>
         <Footer />
       </div>
