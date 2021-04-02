@@ -22,6 +22,7 @@ import OrderDetails from "./components/order/OrderDetails";
 // Admin
 import Dashboard from "./components/admin/Dashboard";
 import ProductsList from "./components/admin/ProductsList";
+import NewProduct from "./components/admin/NewProduct";
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import { loadUser } from "./actions/userActions";
@@ -94,7 +95,13 @@ const App = () => {
           isAdmin={true}
           component={ProductsList}
         />
-        <Footer />
+        <ProtectedRoute
+          exact
+          path="/admin/product"
+          isAdmin={true}
+          component={NewProduct}
+        />
+        {!loading && (!isAuthenticated || user.role !== "admin") && <Footer />}
       </div>
     </Router>
   );
