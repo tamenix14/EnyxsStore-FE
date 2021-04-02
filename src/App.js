@@ -19,10 +19,14 @@ import OrderSuccess from "./components/cart/OrderSuccess";
 import ListOrders from "./components/order/ListOrders";
 import OrderDetails from "./components/order/OrderDetails";
 
+// Admin
+import Dashboard from "./components/admin/Dashboard";
+import ProductsList from "./components/admin/ProductsList";
+
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import { loadUser } from "./actions/userActions";
 import store from "./store";
-import { useSelector } from 'react-redux'
+import { useSelector } from "react-redux";
 import ProductDetails from "./components/product/ProductDetails";
 
 // Payment
@@ -44,7 +48,7 @@ const App = () => {
     getStripApiKey();
   }, []);
 
-  const { user, isAuthenticated, loading } = useSelector(state => state.auth)
+  const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
 
   return (
     <Router>
@@ -67,11 +71,7 @@ const App = () => {
           <Route exact path="/product/:id" component={ProductDetails} />
           <Route exact path="/cart" component={Cart} />
           <ProtectedRoute exact path="/shipping" component={Shipping} />
-          <ProtectedRoute
-            exact
-            path="/confirm"
-            component={ConfirmOrder}
-          />
+          <ProtectedRoute exact path="/confirm" component={ConfirmOrder} />
           {stripeApiKey && (
             <Elements stripe={loadStripe(stripeApiKey)}>
               <ProtectedRoute path="/payment" component={Payment} />
@@ -81,6 +81,19 @@ const App = () => {
           <ProtectedRoute exact path="/orders/me" component={ListOrders} />
           <ProtectedRoute exact path="/order/:id" component={OrderDetails} />
         </div>
+        {/* Admin */}
+        <ProtectedRoute
+          exact
+          path="/dashboard"
+          isAdmin={true}
+          component={Dashboard}
+        />
+        <ProtectedRoute
+          exact
+          path="/admin/products"
+          isAdmin={true}
+          component={ProductsList}
+        />
         <Footer />
       </div>
     </Router>
