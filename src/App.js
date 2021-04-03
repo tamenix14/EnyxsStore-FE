@@ -28,6 +28,7 @@ import OrdersList from "./components/admin/OrdersList";
 import ProcessOrder from "./components/admin/ProcessOrder";
 import UsersList from "./components/admin/UsersList"
 import UpdateUser from "./components/admin/UpdateUser"
+import ProductReviews from "./components/admin/ProductReviews"
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import { loadUser } from "./actions/userActions";
@@ -131,11 +132,18 @@ const App = () => {
           component={UsersList}
         />
 
-<ProtectedRoute
+        <ProtectedRoute
           exact
           path="/admin/user/:id"
           isAdmin={true}
           component={UpdateUser}
+        />
+
+<ProtectedRoute
+          exact
+          path="/admin/reviews"
+          isAdmin={true}
+          component={ProductReviews}
         />
 
         {!loading && (!isAuthenticated || user.role !== "admin") && <Footer />}
