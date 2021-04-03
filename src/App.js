@@ -23,6 +23,11 @@ import OrderDetails from "./components/order/OrderDetails";
 import Dashboard from "./components/admin/Dashboard";
 import ProductsList from "./components/admin/ProductsList";
 import NewProduct from "./components/admin/NewProduct";
+import UpdateProduct from "./components/admin/UpdateProduct";
+import OrdersList from "./components/admin/OrdersList";
+import ProcessOrder from "./components/admin/ProcessOrder";
+import UsersList from "./components/admin/UsersList"
+import UpdateUser from "./components/admin/UpdateUser"
 
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import { loadUser } from "./actions/userActions";
@@ -101,6 +106,38 @@ const App = () => {
           isAdmin={true}
           component={NewProduct}
         />
+        <ProtectedRoute
+          exact
+          path="/admin/product/:id"
+          isAdmin={true}
+          component={UpdateProduct}
+        />
+        <ProtectedRoute
+          exact
+          path="/admin/orders"
+          isAdmin={true}
+          component={OrdersList}
+        />
+        <ProtectedRoute
+          exact
+          path="/admin/order/:id"
+          isAdmin={true}
+          component={ProcessOrder}
+        />
+        <ProtectedRoute
+          exact
+          path="/admin/users"
+          isAdmin={true}
+          component={UsersList}
+        />
+
+<ProtectedRoute
+          exact
+          path="/admin/user/:id"
+          isAdmin={true}
+          component={UpdateUser}
+        />
+
         {!loading && (!isAuthenticated || user.role !== "admin") && <Footer />}
       </div>
     </Router>

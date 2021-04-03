@@ -1,19 +1,22 @@
 import React, { Fragment, useEffect } from "react";
-import {useSelector, useDispatch} from "react-redux"
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import MetaData from "../layout/MetaData";
 import Loader from "../layout/Loader";
 import Sidebar from "./Sidebar";
-import {getAdminProducts} from "../../actions/productActions"
+import { getAdminProducts } from "../../actions/productActions";
+import { allOrders } from "../../actions/orderActions";
+import { allUsers } from "../../actions/userActions";
+
 const Dashboard = () => {
   const dispatch = useDispatch();
 
   const { products } = useSelector((state) => state.products);
-  // const { users } = useSelector((state) => state.allUsers);
-  // const { orders, totalAmount, loading } = useSelector(
-  //   (state) => state.allOrders
-  // );
+  const { users } = useSelector((state) => state.allUsers);
+  const { orders, totalAmount, loading } = useSelector(
+    (state) => state.allOrders
+  );
 
   let outOfStock = 0;
   products.forEach((product) => {
@@ -24,8 +27,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(getAdminProducts());
-    // dispatch(allOrders());
-    // dispatch(allUsers());
+    dispatch(allOrders());
+    dispatch(allUsers());
   }, [dispatch]);
 
   return (
@@ -38,9 +41,9 @@ const Dashboard = () => {
         <div className="col-12 col-md-10">
           <h1 className="my-4">Dashboard</h1>
 
-          {/* {loading ? ( */}
-            {/* <Loader /> */}
-          {/* ) : ( */}
+          {loading ? (
+            <Loader />
+          ) : (
             <Fragment>
               <MetaData title={"Admin Dashboard"} />
 
@@ -50,7 +53,7 @@ const Dashboard = () => {
                     <div className="card-body">
                       <div className="text-center card-font-size">
                         Total Amount
-                        {/* <br /> <b>${totalAmount && totalAmount.toFixed(2)}</b> */}
+                        <br /> <b>${totalAmount && totalAmount.toFixed(2)}</b>
                       </div>
                     </div>
                   </div>
@@ -83,7 +86,7 @@ const Dashboard = () => {
                     <div className="card-body">
                       <div className="text-center card-font-size">
                         Orders
-                        {/* <br /> <b>{orders && orders.length}</b> */}
+                        <br /> <b>{orders && orders.length}</b>
                       </div>
                     </div>
                     <Link
@@ -103,7 +106,7 @@ const Dashboard = () => {
                     <div className="card-body">
                       <div className="text-center card-font-size">
                         Users
-                        {/* <br /> <b>{users && users.length}</b> */}
+                        <br /> <b>{users && users.length}</b>
                       </div>
                     </div>
                     <Link
@@ -130,7 +133,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </Fragment>
-          {/* )} */}
+          )}
         </div>
       </div>
     </Fragment>

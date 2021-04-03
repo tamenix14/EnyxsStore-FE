@@ -4,10 +4,14 @@ import Sidebar from "./Sidebar";
 
 import { useAlert } from "react-alert";
 import { useDispatch, useSelector } from "react-redux";
-import { newProduct, clearErrors } from "../../actions/productActions";
-import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
+import {
+  updateProduct,
+  getProductDetails,
+  clearErrors,
+} from "../../actions/productActions";
+import { UPDATE_PRODUCT_RESET } from "../../constants/productConstants";
 
-const NewProduct = ({ history }) => {
+const UpdateProduct = ({ match, history }) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
@@ -19,6 +23,7 @@ const NewProduct = ({ history }) => {
 
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
+  const [oldImages, setOldImages] = useState([]);
 
   const categories = [
     "Cleats",
@@ -45,20 +50,53 @@ const NewProduct = ({ history }) => {
   const alert = useAlert();
   const dispatch = useDispatch();
 
-  const { loading, error, success } = useSelector((state) => state.newProduct);
+  const { error, product } = useSelector((state) => state.productDetails);
+  const { loading, error: updateError, isUpdated } = useSelector(
+    (state) => state.product
+  );
+
+  const productId = match.params.id;
 
   useEffect(() => {
+    if (product && product._id !== productId) {
+      dispatch(getProductDetails(productId));
+    } else {
+      setName(product.name);
+      setPrice(product.price);
+      setDescription(product.description);
+      setCategory(product.category);
+      setStock(product.stock);
+      setSeller(product.seller);
+      setColor(product.color);
+      setBrand(product.brand);
+      setOldImages(product.images);
+    }
+
     if (error) {
       alert.error(error);
       dispatch(clearErrors());
     }
 
-    if (success) {
-      history.push("/admin/products");
-      alert.success("Product created successfully");
-      dispatch({ type: NEW_PRODUCT_RESET });
+    if (updateError) {
+      alert.error(updateError);
+      dispatch(clearErrors());
     }
-  }, [dispatch, alert, error, success, history]);
+
+    if (isUpdated) {
+      history.push("/admin/products");
+      alert.success("Product updated successfully");
+      dispatch({ type: UPDATE_PRODUCT_RESET });
+    }
+  }, [
+    dispatch,
+    alert,
+    error,
+    isUpdated,
+    history,
+    updateError,
+    product,
+    productId,
+  ]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -77,7 +115,7 @@ const NewProduct = ({ history }) => {
       formData.append("images", image);
     });
 
-    dispatch(newProduct(formData));
+    dispatch(updateProduct(product._id, formData));
   };
 
   const onChange = (e) => {
@@ -85,6 +123,7 @@ const NewProduct = ({ history }) => {
 
     setImagesPreview([]);
     setImages([]);
+    setOldImages([]);
 
     files.forEach((file) => {
       const reader = new FileReader();
@@ -102,7 +141,7 @@ const NewProduct = ({ history }) => {
 
   return (
     <Fragment>
-      <MetaData title={"New Product"} />
+      <MetaData title={"Update Product"} />
       <div className="row">
         <div className="col-12 col-md-2">
           <Sidebar />
@@ -116,7 +155,7 @@ const NewProduct = ({ history }) => {
                 onSubmit={submitHandler}
                 encType="multipart/form-data"
               >
-                <h1 className="mb-4">New Product</h1>
+                <h1 className="mb-4">Update Product</h1>
 
                 <div className="form-group">
                   <label htmlFor="name_field">Name</label>
@@ -132,7 +171,7 @@ const NewProduct = ({ history }) => {
                 <div className="form-group">
                   <label htmlFor="price_field">Price</label>
                   <input
-                    type="number"
+                    type="text"
                     id="price_field"
                     className="form-control"
                     value={price}
@@ -159,7 +198,6 @@ const NewProduct = ({ history }) => {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
-                    <option>Select category...</option>
                     {categories.map((category) => (
                       <option key={category} value={category}>
                         {category}
@@ -238,6 +276,18 @@ const NewProduct = ({ history }) => {
                     </label>
                   </div>
 
+                  {oldImages &&
+                    oldImages.map((img) => (
+                      <img
+                        key={img}
+                        src={img.url}
+                        alt={img.url}
+                        className="mt-3 mr-2"
+                        width="55"
+                        height="52"
+                      />
+                    ))}
+
                   {imagesPreview.map((img) => (
                     <img
                       src={img}
@@ -254,10 +304,9 @@ const NewProduct = ({ history }) => {
                   id="login_button"
                   type="submit"
                   className="btn btn-block py-3"
-                  // disabled={loading ? true : false}
+                //   disabled={loading ? true : false}
                 >
-                 CREATE
-                  {/* {loading ? <div className="loader"></div> : "CREATE"} */}
+                  UPDATE
                 </button>
               </form>
             </div>
@@ -268,4 +317,4 @@ const NewProduct = ({ history }) => {
   );
 };
 
-export default NewProduct;
+export default UpdateProduct;
