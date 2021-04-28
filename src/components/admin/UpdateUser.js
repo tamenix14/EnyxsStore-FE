@@ -48,6 +48,7 @@ const UpdateUser = ({ history, match }) => {
       dispatch({
         type: UPDATE_USER_RESET,
       });
+      window.location.reload()
     }
   }, [dispatch, alert, error, history, isUpdated, userId, user]);
 

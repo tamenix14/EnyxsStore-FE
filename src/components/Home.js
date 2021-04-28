@@ -9,27 +9,23 @@ import Loader from "./layout/Loader";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "react-alert";
-import { getProducts } from "../actions/productActions";
+import { getProducts} from "../actions/productActions";
+
+// Carousel
+import Carousel from "./Carousel"
 
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 
 const Home = ({ match }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [price, setPrice] = useState([1, 9000]);
+  const [price, setPrice] = useState([1, 9999]);
   const [category, setCategory] = useState("");
   const [rating, setRating] = useState(0);
   const [color, setColor] = useState("");
 
-  const categories = [
-    "Cleats",
-    "Gloves",
-    "Balls",
-    "Shirts",
-    "Accessories",
-    "Bags & Luggage",
-    "Electronics",
-  ];
+
+  const categories = ["Phone", "Smart watch", "Headphone"];
 
   const colors = ["Black", "Brown", "Silver", "White", "Blue", "Ocean"];
 
@@ -76,13 +72,16 @@ const Home = ({ match }) => {
 
   return (
     <Fragment>
+      {/* Carousel */}
+      {keyword ? "" : <Carousel/> }
+      
       {loading ? (
         <Loader />
       ) : (
         <Fragment>
           <MetaData title={"Buy Best Products Online"} />
-
-          <h1 id="products_heading">Latest Products</h1>
+          {keyword ? "" : <h1 id="products_heading" class="text-center">Latest Products</h1> }
+          
           <section id="products" className="container mt-5">
             <div className="row">
               {keyword ? (
@@ -206,10 +205,11 @@ const Home = ({ match }) => {
                 </Fragment>
               ) : (
                 products.map((product) => (
-                  <Product key={product._id} product={product} col={3} />
+                  <Product key={product._id} product={product} col={4} />
                 ))
               )}
             </div>
+
           </section>
 
           {resPerPage < count && (

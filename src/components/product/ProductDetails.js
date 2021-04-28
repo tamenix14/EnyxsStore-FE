@@ -2,14 +2,17 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Carousel } from "react-bootstrap";
 import Loader from "../layout/Loader";
 import MetaData from "../layout/MetaData";
-import ListReviews from '../review/ListReviews'
+import ListReviews from "../review/ListReviews";
 import { useAlert } from "react-alert";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getProductDetails, newReview, clearErrors } from "../../actions/productActions";
+import {
+  getProductDetails,
+  newReview,
+  clearErrors,
+} from "../../actions/productActions";
 import { addItemToCart } from "../../actions/cartActions";
-import { NEW_REVIEW_RESET } from '../../constants/productConstants'
-
+import { NEW_REVIEW_RESET } from "../../constants/productConstants";
 
 const ProductDetails = ({ match }) => {
   const dispatch = useDispatch();
@@ -40,8 +43,8 @@ const ProductDetails = ({ match }) => {
     }
 
     if (success) {
-      alert.success('Reivew posted successfully')
-      dispatch({ type: NEW_REVIEW_RESET })
+      alert.success("Reivew posted successfully");
+      dispatch({ type: NEW_REVIEW_RESET });
     }
   }, [dispatch, alert, error, reviewError, match.params.id, success]);
 
@@ -109,12 +112,12 @@ const ProductDetails = ({ match }) => {
   const reviewHandler = () => {
     const formData = new FormData();
 
-    formData.set('rating', rating);
-    formData.set('comment', comment);
-    formData.set('productId', match.params.id);
+    formData.set("rating", rating);
+    formData.set("comment", comment);
+    formData.set("productId", match.params.id);
 
     dispatch(newReview(formData));
-}
+  };
 
   return (
     <Fragment>
@@ -123,7 +126,7 @@ const ProductDetails = ({ match }) => {
       ) : (
         <Fragment>
           <MetaData title={product.name} />
-          <div className="row d-flex justify-content-around">
+          <div className="row d-flex justify-content-around mt-5">
             <div className="col-12 col-lg-5 img-fluid" id="product_image">
               <Carousel pause="hover">
                 {product.images &&
@@ -139,12 +142,11 @@ const ProductDetails = ({ match }) => {
               </Carousel>
             </div>
 
-            <div className="col-12 col-lg-5 mt-5">
+            <div className="col-12 col-lg-4 mt-5">
               <h3>{product.name}</h3>
               <p id="product_id">Product # {product._id}</p>
-
+              {product.category} / {product.seller}
               <hr />
-
               <div className="rating-outer">
                 <div
                   className="rating-inner"
@@ -152,9 +154,7 @@ const ProductDetails = ({ match }) => {
                 ></div>
               </div>
               <span id="no_of_reviews">({product.numOfReviews} Reviews)</span>
-
               <hr />
-
               <p id="product_price">${product.price}</p>
               <div className="stockCounter d-inline">
                 <span className="btn btn-danger minus" onClick={decreaseQty}>
@@ -181,9 +181,7 @@ const ProductDetails = ({ match }) => {
               >
                 Add to Cart
               </button>
-
               <hr />
-
               <p>
                 Status:{" "}
                 <span
@@ -193,16 +191,11 @@ const ProductDetails = ({ match }) => {
                   {product.stock > 0 ? "In Stock" : "Out of Stock"}
                 </span>
               </p>
-
-              <hr />
-
-              <h4 className="mt-2">Description:</h4>
-              <p>{product.description}</p>
-              <hr />
-              <p id="product_seller mb-3">
-                Sold by: <strong>{product.seller}</strong>
-              </p>
-
+              <div>
+                <span className="mt-2">
+                  Color: <span>{product.color}</span>
+                </span>
+              </div>
               {user ? (
                 <button
                   id="review_btn"
@@ -219,8 +212,7 @@ const ProductDetails = ({ match }) => {
                   Login to post your review.
                 </div>
               )}
-
-              <div className="row mt-2 mb-5">
+              <div className="row">
                 <div className="rating w-50">
                   <div
                     className="modal fade"
@@ -287,8 +279,30 @@ const ProductDetails = ({ match }) => {
                 </div>
               </div>
             </div>
+            <div style={{ whiteSpace: "nowrap" }}  className="col-12 col-lg-3 mt-5">
+              <h4 className="mt-0 mb-4">
+                Technical specifications
+              </h4>
+              <p><span style={{fontWeight:"bold"}}>Screen size</span>: {product.screensize}</p>
+              <hr />
+              <p><span style={{fontWeight:"bold"}}>Screen Technology</span>: {product.screentechnology}</p>
+              <hr />
+              <p><span style={{fontWeight:"bold"}}>Ram Capacity</span>: {product.ramcapacity}</p>
+              <hr />
+              <p><span style={{fontWeight:"bold"}}>Internal Memory</span>: {product.internalmemory}</p>
+              <hr />
+              <p><span style={{fontWeight:"bold"}}>Battery</span>: {product.battery}</p>
+              <hr />
+              <p><span style={{fontWeight:"bold"}}>Operating System</span>: {product.operatingsystem}</p>
+              <hr />
+              <p><span style={{fontWeight:"bold"}}>Material</span>: {product.material}</p>
+            </div>
           </div>
-
+          <div className="row m-0">
+            <h4>Description:</h4>
+            <p>{product.description}</p>
+            <hr />
+          </div>
           {product.reviews && product.reviews.length > 0 && (
             <ListReviews reviews={product.reviews} />
           )}

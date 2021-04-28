@@ -18,6 +18,7 @@ const OrderDetails = ({match}) => {
     user,
     totalPrice,
     orderStatus,
+    paidAt,
   } = order;
 
   useEffect(() => {
@@ -65,8 +66,8 @@ const OrderDetails = ({match}) => {
               <hr />
 
               <h4 className="my-4">Payment</h4>
-              <p className={isPaid ? "greenColor" : "redColor"}>
-                <b>{isPaid ? "PAID" : "NOT PAID"}</b>
+              <p className={order.paidAt ? "greenColor" : "redColor"}>
+                <b>PAID</b>
               </p>
 
               <h4 className="my-4">Order Status:</h4>

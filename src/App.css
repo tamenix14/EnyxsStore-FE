@@ -8,6 +8,12 @@ body {
   overflow-x: hidden;
 }
 
+.App {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
 /* Scroll Bar */
 
 ::-webkit-scrollbar-track {
@@ -33,6 +39,10 @@ nav {
 
 #search_btn {
   background-color: #febd69;
+}
+
+.navbar-brand a:hover {
+  text-decoration: none;
 }
 
 .input-group {
@@ -222,6 +232,10 @@ footer {
 }
 
 /* Cart */
+#cart svg {
+  margin-right: 5px;
+  margin-top: -3px;
+}
 
 .cart-item {
   margin: 1rem 0rem;
@@ -525,7 +539,7 @@ footer {
 }
 
 #sidebar ul li a {
-  padding: 10px;
+  padding: 20px;
   font-size: 1.1em;
   display: block;
   color: white;
@@ -623,3 +637,45 @@ ul.CTAs a {
   font-size: 0.8rem;
   color: grey;
 }
+
+.slick-dots li {
+  width:150px !important;
+  height:unset !important;
+}
+
+.slick-dots {
+  position: unset !important;
+}
+
+/* FOOTER */
+.wrapper__footer {
+  background-color: #f9f9f9;
+}
+
+.wrapper__right-footer {
+  background: #232f3e;
+  color: #fff;
+  position: relative;
+  padding: 24px 40px 24px 84px;
+}
+
+.wrapper__right-footer::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 0;
+  height: 0;
+  border: 40px solid transparent;
+  border-right-color: #f9f9f9;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.wrapper__left-footer{
+  padding: 24px 40px 24px 84px;
+  text-align: left;
+  border-bottom: 1px solid #dadada;
+}
+

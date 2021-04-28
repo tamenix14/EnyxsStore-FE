@@ -28,6 +28,7 @@ const ProcessOrder = ({ match }) => {
     user,
     totalPrice,
     orderStatus,
+    paidAt,
   } = order;
   const { error, isUpdated } = useSelector((state) => state.order);
 
@@ -95,14 +96,14 @@ const ProcessOrder = ({ match }) => {
                   <hr />
 
                   <h4 className="my-4">Payment</h4>
-                  <p className={isPaid ? "greenColor" : "redColor"}>
-                    <b>{isPaid ? "PAID" : "NOT PAID"}</b>
+                  <p className={paidAt ? "greenColor" : "redColor"}>
+                    <b>{paidAt ? "PAID" : "NOT PAID"}</b>
                   </p>
 
-                  <h4 className="my-4">Stripe ID</h4>
+                  {/* <h4 className="my-4">Stripe ID</h4>
                   <p>
                     <b>{paymentInfo && paymentInfo.id}</b>
-                  </p>
+                  </p> */}
 
                   <h4 className="my-4">Order Status:</h4>
                   <p

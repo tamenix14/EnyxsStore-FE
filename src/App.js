@@ -61,8 +61,9 @@ const App = () => {
     <Router>
       <div className="App">
         <Header />
-        <div className="container container-fluid">
-          <Route exact path="/" component={Home} />
+        <Route exact path="/" component={Home} />
+        <div style={{flex: 1}} className="container container-fluid p-0">
+          
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <ProtectedRoute exact path="/me" component={Profile} />
@@ -147,6 +148,7 @@ const App = () => {
         />
 
         {!loading && (!isAuthenticated || user.role !== "admin") && <Footer />}
+        
       </div>
     </Router>
   );
